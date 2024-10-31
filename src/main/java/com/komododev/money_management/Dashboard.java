@@ -40,6 +40,22 @@ public class Dashboard extends javax.swing.JFrame {
         Database.ShowTable(conn, dft);
     }
     
+    private boolean Validation(String balance, Object selectedBalanceType){
+        
+        if (selectedBalanceType.equals(dropDownTypeBalance.getItemAt(2))){
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Type Balance incorrect", "An error has occurred.", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        if (balance.equals("") || balance.equals("0") || !balance.matches("\\d+")){
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Balance incorrect", "An error has occurred.", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -81,18 +97,18 @@ public class Dashboard extends javax.swing.JFrame {
 
         tableBalance.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "No", "Date", "Deposit", "Withdraw", "Balance", "Information"
+                "No", "Date", "Deposit", "Withdraw", "Balance", "Information", "id"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -111,12 +127,8 @@ public class Dashboard extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tableBalance);
         if (tableBalance.getColumnModel().getColumnCount() > 0) {
-            tableBalance.getColumnModel().getColumn(0).setHeaderValue("No");
-            tableBalance.getColumnModel().getColumn(1).setHeaderValue("Date");
-            tableBalance.getColumnModel().getColumn(2).setHeaderValue("Deposit");
-            tableBalance.getColumnModel().getColumn(3).setHeaderValue("Withdraw");
-            tableBalance.getColumnModel().getColumn(4).setHeaderValue("Balance");
-            tableBalance.getColumnModel().getColumn(5).setHeaderValue("Information");
+            tableBalance.getColumnModel().getColumn(6).setMinWidth(0);
+            tableBalance.getColumnModel().getColumn(6).setMaxWidth(0);
         }
 
         buttonSubmit.setText("Submit");
@@ -187,6 +199,11 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel4.setText("Type :");
 
         buttonDelete.setText("Delete");
+        buttonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -314,15 +331,7 @@ public class Dashboard extends javax.swing.JFrame {
         
         Object selectedBalanceType = dropDownTypeBalance.getSelectedItem();
         
-        if (selectedBalanceType.equals(dropDownTypeBalance.getItemAt(2))){
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Type Balance incorrect", "An error has occurred.", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (balance.equals("") || balance.equals("0") || !balance.matches("\\d+")){
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Balance incorrect", "An error has occurred.", JOptionPane.ERROR_MESSAGE);
+        if (!Validation(balance, selectedBalanceType)){
             return;
         }
         
@@ -352,6 +361,30 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void buttonModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonModifyActionPerformed
         // TODO add your handling code here:
+        String balance, information, typeBalance;
+        
+        typeBalance = (String) dropDownTypeBalance.getSelectedItem();
+        balance = textBalance.getText();
+        information = textInformation.getText();
+        
+        Object selectedBalanceType = dropDownTypeBalance.getSelectedItem();
+        DefaultTableModel dft = (DefaultTableModel)tableBalance.getModel();
+        int selectedIndex = tableBalance.getSelectedRow();
+
+        
+        if (!Validation(balance, selectedBalanceType)){
+            return;
+        }
+        
+        if (Database.Modify(conn, selectedIndex, dft, balance, information, typeBalance)) {
+            Toolkit.getDefaultToolkit().beep();
+            ClearInput();
+            TableBalance();
+            
+        } else {
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Please put Number", "Failed Input.", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_buttonModifyActionPerformed
 
     private void dropDownTypeBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dropDownTypeBalanceActionPerformed
@@ -368,13 +401,38 @@ public class Dashboard extends javax.swing.JFrame {
         int selectedIndex = tableBalance.getSelectedRow();
         double depositBalance = Double.parseDouble(dft.getValueAt(selectedIndex, 2).toString());
 
-        if (depositBalance > 0) dropDownTypeBalance.setSelectedItem(dropDownTypeBalance.getItemAt(0));
-        else dropDownTypeBalance.setSelectedItem(dropDownTypeBalance.getItemAt(1));
-
-        textBalance.setText(dft.getValueAt(selectedIndex, 4).toString());
+        if (depositBalance > 0) {
+            dropDownTypeBalance.setSelectedItem(dropDownTypeBalance.getItemAt(0));
+            textBalance.setText(dft.getValueAt(selectedIndex, 2).toString());
+        }
+        else {
+            dropDownTypeBalance.setSelectedItem(dropDownTypeBalance.getItemAt(1));
+            textBalance.setText(dft.getValueAt(selectedIndex, 3).toString());
+        }
+        
         textInformation.setText(dft.getValueAt(selectedIndex, 5).toString());
 
     }//GEN-LAST:event_tableBalanceMouseClicked
+
+    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel dft = (DefaultTableModel)tableBalance.getModel();
+        int selectedIndex = tableBalance.getSelectedRow();
+        
+        if (Database.Delete(conn, selectedIndex, dft)) {
+            Toolkit.getDefaultToolkit().beep();
+            ClearInput();
+            TableBalance();
+            
+            buttonModify.setVisible(false);
+            buttonCancel.setVisible(false);
+            buttonSubmit.setVisible(true);
+            
+        } else {
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Not Avalaible", "Failed Input.", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_buttonDeleteActionPerformed
 
     /**
      * @param args the command line arguments
