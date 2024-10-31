@@ -8,6 +8,11 @@ import java.awt.Toolkit;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
@@ -22,11 +27,16 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         TableBalance();
         
+        // Display pie chart in jPanel2
+        PieChart(pieChartAnnual, 80, 20, "Annual Chart");
+        PieChart(pieChartMonthly, 50, 50, "Montly Chart");
+        
         buttonModify.setVisible(false);
         buttonCancel.setVisible(false);
         dropDownTypeBalance.setSelectedItem(dropDownTypeBalance.getItemAt(2));
     }
     
+
     private Connection conn = Database.Connect();
     
     private void ClearInput(){
@@ -56,7 +66,34 @@ public class Dashboard extends javax.swing.JFrame {
         return true;
     }
     
+    private void PieChart(javax.swing.JPanel panel, int deposit, int withdraw, String name) {
+        DefaultPieDataset pieDataset = new DefaultPieDataset();
+        pieDataset.setValue("Deposit - " + deposit + "%", deposit);
+        pieDataset.setValue("Withdraw - " + withdraw + "%", withdraw);
 
+        // Create the pie chart
+        JFreeChart chart = ChartFactory.createPieChart(
+            name,              // chart title
+            pieDataset,        // data
+            true,              // include legend
+            true,
+            false
+        );
+
+        // Customize the plot
+        PiePlot plot = (PiePlot)chart.getPlot();
+        plot.setForegroundAlpha(0.6f); // Set transparency for 2D plot
+
+        // Add the chart to a ChartPanel
+        ChartPanel chartPanelContainer = new ChartPanel(chart);
+        chartPanelContainer.setPreferredSize(panel.getSize());
+
+        panel.removeAll();
+        panel.setLayout(new java.awt.BorderLayout()); 
+        panel.add(chartPanelContainer, java.awt.BorderLayout.CENTER);
+        panel.validate(); 
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -67,17 +104,9 @@ public class Dashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableBalance = new javax.swing.JTable();
         buttonSubmit = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
-        jComboBox2 = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
         textBalance = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -86,14 +115,154 @@ public class Dashboard extends javax.swing.JFrame {
         buttonModify = new javax.swing.JButton();
         dropDownTypeBalance = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
+        pieChartAnnual = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        pieChartMonthly = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTextArea4 = new javax.swing.JTextArea();
+        jComboBox2 = new javax.swing.JComboBox<>();
         buttonDelete = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableBalance = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("pie chart total pada \nkeseluruhan");
-        jScrollPane2.setViewportView(jTextArea1);
+        jPanel1.setName("jPanel1"); // NOI18N
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        buttonSubmit.setText("Submit");
+        buttonSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSubmitActionPerformed(evt);
+            }
+        });
+        jPanel1.add(buttonSubmit, new org.netbeans.lib.awtextra.AbsoluteConstraints(987, 235, 81, -1));
+
+        buttonCancel.setText("Cancel");
+        buttonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonCancelActionPerformed(evt);
+            }
+        });
+        jPanel1.add(buttonCancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1155, 235, 81, -1));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setText("Welcome, User!");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
+
+        textBalance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textBalanceActionPerformed(evt);
+            }
+        });
+        jPanel1.add(textBalance, new org.netbeans.lib.awtextra.AbsoluteConstraints(808, 91, 428, -1));
+
+        jLabel2.setText("Balance :");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(708, 94, -1, -1));
+
+        jLabel3.setText("Information :");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(708, 131, -1, -1));
+
+        textInformation.setColumns(20);
+        textInformation.setRows(5);
+        jScrollPane3.setViewportView(textInformation);
+
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(808, 131, 428, -1));
+
+        buttonModify.setText("Modify");
+        buttonModify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonModifyActionPerformed(evt);
+            }
+        });
+        jPanel1.add(buttonModify, new org.netbeans.lib.awtextra.AbsoluteConstraints(808, 235, 81, -1));
+
+        dropDownTypeBalance.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Deposit", "Withdraw", " " }));
+        dropDownTypeBalance.setFocusCycleRoot(true);
+        dropDownTypeBalance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dropDownTypeBalanceActionPerformed(evt);
+            }
+        });
+        jPanel1.add(dropDownTypeBalance, new org.netbeans.lib.awtextra.AbsoluteConstraints(808, 51, 428, -1));
+
+        jLabel4.setText("Type :");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(708, 54, -1, -1));
+
+        pieChartAnnual.setBackground(new java.awt.Color(0, 255, 255));
+
+        jTextArea2.setColumns(20);
+        jTextArea2.setRows(5);
+        jTextArea2.setText("pie chart total pada \nkeseluruhan");
+        jScrollPane5.setViewportView(jTextArea2);
+
+        javax.swing.GroupLayout pieChartAnnualLayout = new javax.swing.GroupLayout(pieChartAnnual);
+        pieChartAnnual.setLayout(pieChartAnnualLayout);
+        pieChartAnnualLayout.setHorizontalGroup(
+            pieChartAnnualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pieChartAnnualLayout.createSequentialGroup()
+                .addContainerGap(124, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pieChartAnnualLayout.setVerticalGroup(
+            pieChartAnnualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pieChartAnnualLayout.createSequentialGroup()
+                .addContainerGap(84, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(69, 69, 69))
+        );
+
+        jPanel1.add(pieChartAnnual, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 58, -1, -1));
+
+        pieChartMonthly.setBackground(new java.awt.Color(255, 51, 255));
+
+        jTextArea4.setColumns(20);
+        jTextArea4.setRows(5);
+        jTextArea4.setText("pie chart total \npada bulan ini");
+        jScrollPane6.setViewportView(jTextArea4);
+
+        javax.swing.GroupLayout pieChartMonthlyLayout = new javax.swing.GroupLayout(pieChartMonthly);
+        pieChartMonthly.setLayout(pieChartMonthlyLayout);
+        pieChartMonthlyLayout.setHorizontalGroup(
+            pieChartMonthlyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pieChartMonthlyLayout.createSequentialGroup()
+                .addContainerGap(124, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pieChartMonthlyLayout.setVerticalGroup(
+            pieChartMonthlyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pieChartMonthlyLayout.createSequentialGroup()
+                .addContainerGap(84, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(69, 69, 69))
+        );
+
+        jPanel1.add(pieChartMonthly, new org.netbeans.lib.awtextra.AbsoluteConstraints(417, 58, -1, -1));
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Month", "Item 2", "Item 3", "Item 4" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+
+        buttonDelete.setText("Delete");
+        buttonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDeleteActionPerformed(evt);
+            }
+        });
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Year", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         tableBalance.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -131,221 +300,96 @@ public class Dashboard extends javax.swing.JFrame {
             tableBalance.getColumnModel().getColumn(6).setMaxWidth(0);
         }
 
-        buttonSubmit.setText("Submit");
-        buttonSubmit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSubmitActionPerformed(evt);
-            }
-        });
-
-        buttonCancel.setText("Cancel");
-        buttonCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonCancelActionPerformed(evt);
-            }
-        });
-
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jTextArea3.setText("pie chart total \npada bulan ini");
-        jScrollPane4.setViewportView(jTextArea3);
-
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Month", "Item 2", "Item 3", "Item 4" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setText("Welcome, User!");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Year", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
-        textBalance.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textBalanceActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Balance :");
-
-        jLabel3.setText("Information :");
-
-        textInformation.setColumns(20);
-        textInformation.setRows(5);
-        jScrollPane3.setViewportView(textInformation);
-
-        buttonModify.setText("Modify");
-        buttonModify.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonModifyActionPerformed(evt);
-            }
-        });
-
-        dropDownTypeBalance.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Deposit", "Withdraw", " " }));
-        dropDownTypeBalance.setFocusCycleRoot(true);
-        dropDownTypeBalance.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dropDownTypeBalanceActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setText("Type :");
-
-        buttonDelete.setText("Delete");
-        buttonDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonDeleteActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4))
-                                .addGap(31, 31, 31)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
-                                    .addComponent(textBalance)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(buttonModify, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(buttonCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(dropDownTypeBalance, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(36, 36, 36)
-                                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(buttonSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(175, 175, 175)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(buttonDelete)
-                .addGap(52, 52, 52)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(77, 77, 77))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 35, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(85, 85, 85)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(dropDownTypeBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(textBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(buttonSubmit)
-                        .addGap(37, 37, 37)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(buttonModify)
-                            .addComponent(buttonCancel)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(13, 13, 13))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonDelete)
-                        .addGap(27, 27, 27))))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(buttonDelete)
+                        .addGap(995, 995, 995)
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1229, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(buttonDelete, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed
+    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
         // TODO add your handling code here:
-        ClearInput();
-        
-        buttonModify.setVisible(false);
-        buttonCancel.setVisible(false);
-        buttonSubmit.setVisible(true);
-    }//GEN-LAST:event_buttonCancelActionPerformed
+        DefaultTableModel dft = (DefaultTableModel)tableBalance.getModel();
+        int selectedIndex = tableBalance.getSelectedRow();
 
-    private void buttonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitActionPerformed
-        // TODO add your handling code here:
-        String balance, information, typeBalance;
-        
-        typeBalance = (String) dropDownTypeBalance.getSelectedItem();
-        balance = textBalance.getText();
-        information = textInformation.getText();
-        
-        Object selectedBalanceType = dropDownTypeBalance.getSelectedItem();
-        
-        if (!Validation(balance, selectedBalanceType)){
-            return;
-        }
-        
-        if (Database.Insert(conn, balance, information, typeBalance)) {
+        if (Database.Delete(conn, selectedIndex, dft)) {
             Toolkit.getDefaultToolkit().beep();
             ClearInput();
             TableBalance();
-            
+
+            buttonModify.setVisible(false);
+            buttonCancel.setVisible(false);
+            buttonSubmit.setVisible(true);
+
+        } else {
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "Not Avalaible", "Failed Input.", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_buttonDeleteActionPerformed
+
+    private void dropDownTypeBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dropDownTypeBalanceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dropDownTypeBalanceActionPerformed
+
+    private void buttonModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonModifyActionPerformed
+        // TODO add your handling code here:
+        String balance, information, typeBalance;
+
+        typeBalance = (String) dropDownTypeBalance.getSelectedItem();
+        balance = textBalance.getText();
+        information = textInformation.getText();
+
+        Object selectedBalanceType = dropDownTypeBalance.getSelectedItem();
+        DefaultTableModel dft = (DefaultTableModel)tableBalance.getModel();
+        int selectedIndex = tableBalance.getSelectedRow();
+
+        if (!Validation(balance, selectedBalanceType)){
+            return;
+        }
+
+        if (Database.Modify(conn, selectedIndex, dft, balance, information, typeBalance)) {
+            Toolkit.getDefaultToolkit().beep();
+            ClearInput();
+            TableBalance();
+
         } else {
             Toolkit.getDefaultToolkit().beep();
             JOptionPane.showMessageDialog(null, "Please put Number", "Failed Input.", JOptionPane.ERROR_MESSAGE);
         }
+    }//GEN-LAST:event_buttonModifyActionPerformed
 
-    }//GEN-LAST:event_buttonSubmitActionPerformed
+    private void textBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textBalanceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textBalanceActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
@@ -355,48 +399,46 @@ public class Dashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
-    private void textBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textBalanceActionPerformed
+    private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_textBalanceActionPerformed
+        ClearInput();
 
-    private void buttonModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonModifyActionPerformed
+        buttonModify.setVisible(false);
+        buttonCancel.setVisible(false);
+        buttonSubmit.setVisible(true);
+    }//GEN-LAST:event_buttonCancelActionPerformed
+
+    private void buttonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitActionPerformed
         // TODO add your handling code here:
         String balance, information, typeBalance;
-        
+
         typeBalance = (String) dropDownTypeBalance.getSelectedItem();
         balance = textBalance.getText();
         information = textInformation.getText();
-        
-        Object selectedBalanceType = dropDownTypeBalance.getSelectedItem();
-        DefaultTableModel dft = (DefaultTableModel)tableBalance.getModel();
-        int selectedIndex = tableBalance.getSelectedRow();
 
-        
+        Object selectedBalanceType = dropDownTypeBalance.getSelectedItem();
+
         if (!Validation(balance, selectedBalanceType)){
             return;
         }
-        
-        if (Database.Modify(conn, selectedIndex, dft, balance, information, typeBalance)) {
+
+        if (Database.Insert(conn, balance, information, typeBalance)) {
             Toolkit.getDefaultToolkit().beep();
             ClearInput();
             TableBalance();
-            
+
         } else {
             Toolkit.getDefaultToolkit().beep();
             JOptionPane.showMessageDialog(null, "Please put Number", "Failed Input.", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_buttonModifyActionPerformed
-
-    private void dropDownTypeBalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dropDownTypeBalanceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dropDownTypeBalanceActionPerformed
+    }//GEN-LAST:event_buttonSubmitActionPerformed
 
     private void tableBalanceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableBalanceMouseClicked
         // TODO add your handling code here:
         buttonModify.setVisible(true);
         buttonCancel.setVisible(true);
         buttonSubmit.setVisible(false);
-        
+
         DefaultTableModel dft = (DefaultTableModel)tableBalance.getModel();
         int selectedIndex = tableBalance.getSelectedRow();
         double depositBalance = Double.parseDouble(dft.getValueAt(selectedIndex, 2).toString());
@@ -409,30 +451,9 @@ public class Dashboard extends javax.swing.JFrame {
             dropDownTypeBalance.setSelectedItem(dropDownTypeBalance.getItemAt(1));
             textBalance.setText(dft.getValueAt(selectedIndex, 3).toString());
         }
-        
+
         textInformation.setText(dft.getValueAt(selectedIndex, 5).toString());
-
     }//GEN-LAST:event_tableBalanceMouseClicked
-
-    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel dft = (DefaultTableModel)tableBalance.getModel();
-        int selectedIndex = tableBalance.getSelectedRow();
-        
-        if (Database.Delete(conn, selectedIndex, dft)) {
-            Toolkit.getDefaultToolkit().beep();
-            ClearInput();
-            TableBalance();
-            
-            buttonModify.setVisible(false);
-            buttonCancel.setVisible(false);
-            buttonSubmit.setVisible(true);
-            
-        } else {
-            Toolkit.getDefaultToolkit().beep();
-            JOptionPane.showMessageDialog(null, "Not Avalaible", "Failed Input.", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_buttonDeleteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -462,10 +483,13 @@ public class Dashboard extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Dashboard().setVisible(true);
-            }
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new Dashboard().setVisible(true);
+//            }
+//        });
+        java.awt.EventQueue.invokeLater(() -> {
+            new Dashboard().setVisible(true);
         });
     }
 
@@ -483,11 +507,13 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea3;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextArea4;
+    private javax.swing.JPanel pieChartAnnual;
+    private javax.swing.JPanel pieChartMonthly;
     private javax.swing.JTable tableBalance;
     private javax.swing.JTextField textBalance;
     private javax.swing.JTextArea textInformation;

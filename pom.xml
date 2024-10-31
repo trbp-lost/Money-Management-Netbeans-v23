@@ -19,6 +19,19 @@
             <version>9.1.0</version>
             <scope>runtime</scope>
         </dependency>
+        
+        <!-- JFreeChart Dependency : https://github.com/jfree/jfreechart/releases/tag/v1.5.4 -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.3</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>RELEASE230</version>
+        </dependency>
     </dependencies>
 
 </project>
