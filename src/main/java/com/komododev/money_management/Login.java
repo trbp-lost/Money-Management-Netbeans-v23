@@ -8,7 +8,7 @@ import static com.komododev.money_management.Money_management.loginFrame;
 
 /**
  *
- * @author trbp-lost
+ * @author https://github.com/trbp-lost
  */
 public class Login extends javax.swing.JFrame {
     
@@ -146,6 +146,7 @@ public class Login extends javax.swing.JFrame {
 //        Login loginFrame = new Login();
 
         dashboardFrame.setVisible(true);
+        
     }//GEN-LAST:event_submitButtonActionPerformed
 
     /**

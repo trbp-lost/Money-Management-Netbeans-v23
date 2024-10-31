@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author  trbp-lost
+ * @author  https://github.com/trbp-lost
  */
 public class Money_management {
 
@@ -20,7 +20,7 @@ public class Money_management {
 
         loginFrame.setVisible(true);
 
-        System.out.println("Hello World!");
+        System.out.println("trbp-lost!");
     }
 }
 
